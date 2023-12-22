@@ -21,15 +21,15 @@ public class DataGenerator {
     }
 
 
-    public static String generateCity() {
+    public static String generateCity(String locale) {
         return faker.address().cityName();
     }
 
-    public static String generateName() {
+    public static String generateName(String locale) {
         return faker.name().firstName();
     }
 
-    public static String generatePhone() {
+    public static String generatePhone(String locale) {
         return faker.phoneNumber().phoneNumber();
     }
 
@@ -37,8 +37,8 @@ public class DataGenerator {
         private Registration() {
         }
 
-        public static UserInfo generateUser() {
-            return new UserInfo(generateCity(), generateName(), generatePhone());
+        public static UserInfo generateUser(String locale) {
+            return new UserInfo(generateCity(locale), generateName(locale), generatePhone(locale));
         }
     }
     @Value
