@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 
 import java.time.Duration;
+import java.util.Random;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.withText;
@@ -13,9 +14,17 @@ import static com.codeborne.selenide.Selenide.*;
 
 class DeliveryTest {
 
+    String[] cities = {"Казань", "Липецк", "Москва", "Псков", "Воронеж", "Белгород"};
+    String randomCity = getRandomCity(cities);
+    private static String getRandomCity(String[] cities) {
+        Random random = new Random();
+        int randomIndex = random.nextInt(cities.length);
+        return cities[randomIndex];
+    }
     @BeforeEach
     void setup() {
         open("http://localhost:7777");
+
     }
 
     @Test
@@ -24,7 +33,7 @@ class DeliveryTest {
         var validUser = DataGenerator.Registration.generateUser("ru");
         var daysToAddForFirstMeeting = 4;
         var firstMeetingDate = DataGenerator.generateDate(daysToAddForFirstMeeting);
-        $("[data-test-id=city] input").setValue(validUser.getCity());
+        $("[data-test-id=city] input").setValue(randomCity);
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(firstMeetingDate);
         $("[data-test-id=name] input").setValue(validUser.getName());
@@ -36,14 +45,14 @@ class DeliveryTest {
                 .shouldBe(Condition.visible);
     }
     @Test
-    @DisplayName("Should successfully plan and replan meeting")
-    void shouldSuccessfulPlanAndReplanMeeting() {
+    @DisplayName("Should successfully plan and repeat meeting")
+    void shouldSuccessfulPlanAndRepeatMeeting() {
         var validUser = DataGenerator.Registration.generateUser("ru");
         var daysToAddForFirstMeeting = 4;
         var firstMeetingDate = DataGenerator.generateDate(daysToAddForFirstMeeting);
         var daysToAddForSecondMeeting = 7;
         var secondMeetingDate = DataGenerator.generateDate(daysToAddForSecondMeeting);
-        $("[data-test-id=city] input").setValue(validUser.getCity());
+        $("[data-test-id=city] input").setValue(randomCity);
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(firstMeetingDate);
         $("[data-test-id=name] input").setValue(validUser.getName());
@@ -56,8 +65,9 @@ class DeliveryTest {
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(secondMeetingDate);
         $$("button").get(1).click();
-        $("[data-test-id=replan-notification]")
-                .shouldHave(Condition.text("У вас уже запланирована встреча на другую дату. Перепланировать?"), Duration.ofSeconds(15))
+        $("[data-test-id=replan-notification] .button__content").click();
+        $("[data-test-id=success-notification]")
+                .shouldHave(Condition.text("Встреча успешно запланирована на " + secondMeetingDate), Duration.ofSeconds(15))
                 .shouldBe(Condition.visible);
     }
 }
