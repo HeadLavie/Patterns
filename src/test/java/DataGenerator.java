@@ -9,21 +9,18 @@ import java.util.Random;
 
 public class DataGenerator {
 
-    public static class CityGenerator {
-
-        public static String[] cities = {"Казань", "Липецк", "Москва", "Псков", "Воронеж", "Белгород"};
-
-        public static String getRandomCity() {
-            Random random = new Random();
-            int randomIndex = random.nextInt(cities.length);
-            return cities[randomIndex];
-            //return cities[new Random().nextInt(cities.length)];
-        }
-    }
-
     static Faker faker = new Faker(new Locale("ru"));
 
+
     private DataGenerator() {
+    }
+
+    public static String getRandomCity() {
+        String[] cities = {"Казань", "Липецк", "Москва", "Псков", "Воронеж", "Белгород"};
+        Random random = new Random();
+        int randomIndex = random.nextInt(cities.length);
+        return cities[randomIndex];
+        //return cities[new Random().nextInt(cities.length)];
     }
 
     public static String generateDate(int days) {
@@ -51,6 +48,7 @@ public class DataGenerator {
             return new UserInfo(generateCity(locale), generateName(locale), generatePhone(locale));
         }
     }
+
     @Value
     public static class UserInfo {
         String city;
